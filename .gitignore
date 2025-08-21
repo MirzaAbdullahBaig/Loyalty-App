@@ -1,6 +1,7 @@
 # dependencies
 node_modules/
 android
+.env.local
 
 # expo
 .expo/
