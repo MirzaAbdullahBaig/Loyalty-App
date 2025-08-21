@@ -16,9 +16,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../../components/ui/Button';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/Colors';
 
-export default function LoginScreen() {
+export default function ForgotPasswordScreen() {
   const router = useRouter();
-  const { signInWithEmailOtp } = useAuth();
+  const { sendPasswordResetOtp } = useAuth();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,35 +27,19 @@ export default function LoginScreen() {
 
     setIsLoading(true);
     try {
-      await signInWithEmailOtp(email);
-
+      await sendPasswordResetOtp(email);
+      
       router.push({
         pathname: '/(auth)/otp-verification',
-        params: {
-          method: 'email',
+        params: { 
+          method: 'email', 
           contact: email,
-          type: 'signin'
+          type: 'forgot-password'
         }
       });
     } catch (error: any) {
-      console.error('Login error:', error);
-      Alert.alert('Error', error.message || 'Failed to send OTP');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePasswordLogin = async () => {
-    setIsLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      router.replace('/(tabs)');
-    } catch (error: any) {
-      Alert.alert('Login Error', error.message || 'Failed to login');
+      console.error('Forgot password error:', error);
+      Alert.alert('Error', error.message || 'Failed to send reset OTP');
     } finally {
       setIsLoading(false);
     }
@@ -77,10 +61,17 @@ export default function LoginScreen() {
             <Text style={styles.appName}>LoyaltyApp</Text>
           </View>
 
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Text style={styles.backButtonText}>← Back</Text>
+          </TouchableOpacity>
+
           <View style={styles.header}>
-            <Text style={styles.title}>Sign In</Text>
+            <Text style={styles.title}>Reset Password</Text>
             <Text style={styles.subtitle}>
-              Enter your email to receive a verification code
+              Enter your email to receive a password reset code
             </Text>
           </View>
 
@@ -98,7 +89,7 @@ export default function LoginScreen() {
           </View>
 
           <Button
-            title="Send OTP via Email"
+            title="Send Reset Code via Email"
             onPress={handleSendOTP}
             disabled={!isValid}
             loading={isLoading}
@@ -106,25 +97,14 @@ export default function LoginScreen() {
             style={styles.button}
           />
 
-          <TouchableOpacity
-            style={styles.forgotPasswordContainer}
-            onPress={() => router.push('/(auth)/forgot-password')}
+          <TouchableOpacity 
+            style={styles.signInContainer}
+            onPress={() => router.push('/(auth)/login')}
           >
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.signUpContainer}
-            onPress={() => router.push('/(auth)/signup')}
-          >
-            <Text style={styles.signUpText}>
-              Don't have an account? <Text style={styles.signUpLink}>Sign Up</Text>
+            <Text style={styles.signInText}>
+              Remember your password? <Text style={styles.signInLink}>Sign In</Text>
             </Text>
           </TouchableOpacity>
-
-          <Text style={styles.disclaimer}>
-            By continuing, you agree to our Terms of Service and Privacy Policy
-          </Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -144,7 +124,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: Spacing.xxl,
+    marginBottom: Spacing.xl,
   },
   logo: {
     width: 50,
@@ -165,9 +145,19 @@ const styles = StyleSheet.create({
     color: Colors.text,
     fontWeight: '600',
   },
+  backButton: {
+    position: 'absolute',
+    top: Spacing.lg,
+    left: 0,
+  },
+  backButtonText: {
+    ...Typography.body,
+    color: Colors.primary,
+  },
   header: {
     alignItems: 'center',
     marginBottom: Spacing.xxl,
+    marginTop: Spacing.xxl,
   },
   title: {
     ...Typography.title1,
@@ -197,31 +187,15 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: Spacing.lg,
   },
-  forgotPasswordContainer: {
+  signInContainer: {
     alignItems: 'center',
-    marginBottom: Spacing.lg,
   },
-  forgotPasswordText: {
-    ...Typography.body,
-    color: Colors.primary,
-    fontWeight: '600',
-  },
-  signUpContainer: {
-    alignItems: 'center',
-    marginBottom: Spacing.lg,
-  },
-  signUpText: {
+  signInText: {
     ...Typography.body,
     color: Colors.textSecondary,
   },
-  signUpLink: {
+  signInLink: {
     color: Colors.primary,
     fontWeight: '600',
-  },
-  disclaimer: {
-    ...Typography.small,
-    color: Colors.textLight,
-    textAlign: 'center',
-    lineHeight: 18,
   },
 });

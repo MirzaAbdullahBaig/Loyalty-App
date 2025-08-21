@@ -25,24 +25,6 @@ export default function OnboardingScreen() {
             Start your loyalty journey today!
           </Text>
         </View>
-
-        <View style={styles.features}>
-          <FeatureItem
-            icon="📸"
-            title="Scan Receipts"
-            description="Simply scan your receipts to earn points"
-          />
-          <FeatureItem
-            icon="🎁"
-            title="Exclusive Rewards"
-            description="Unlock special promotions and bonuses"
-          />
-          <FeatureItem
-            icon="📊"
-            title="Track Progress"
-            description="Monitor your points and transaction history"
-          />
-        </View>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -121,9 +103,6 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
-  },
-  features: {
-    marginBottom: Spacing.xxl,
   },
   featureItem: {
     flexDirection: 'row',
